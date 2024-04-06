@@ -4,6 +4,7 @@ import type { PlainTextOptions, RenderOptions } from '../types';
 
 import { jsxToString } from './jsx-to-string';
 import { processHtml } from './process';
+import { processHtmlEdge } from './process-edge';
 
 export const renderPlainText = async (
   component: React.ReactElement,
@@ -28,6 +29,18 @@ export const render = async (component: React.ReactElement, options?: RenderOpti
   let html = await jsxToString(component);
 
   html = await processHtml({ html, minify, pretty });
+
+  return html;
+};
+
+export const renderEdge = async (component: React.ReactElement, options?: RenderOptions) => {
+  const { plainText, pretty = false } = options || {};
+
+  if (plainText) return renderPlainText(component, typeof plainText === 'object' ? plainText : {});
+
+  let html = await jsxToString(component);
+
+  html = await processHtmlEdge({ html, minify: false, pretty });
 
   return html;
 };
